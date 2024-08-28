@@ -306,8 +306,9 @@ class BreezeApiTestCase(unittest.TestCase):
         ret = {'event_id': 'Some Data.'}
         self.make_api(ret)
 
-        args = {'start': '3-1-2014', 'end': '3-7-2014'}
+        args = {'start': '3-1-2014', 'end': '3-7-2014', 'category_id': 555, 'details': 1, 'eligible': 0, 'limit': 10}
         result = self.breeze_api.list_events(**args)
+        print(result)
         self.validate_url(ENDPOINTS.EVENTS, expect_params=args)
         self.assertEqual(ret, result)
 
