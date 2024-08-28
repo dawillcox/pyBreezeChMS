@@ -47,7 +47,7 @@ HELPER_CONFIG_FILE = 'breeze_maker.yml'
 _GET_PEOPLE_PARAMS = {'limit', 'offset', 'details', 'filter_json'}
 _ADD_PERSON_PARAMS = {'first', 'last', 'fields_json'}
 _UPDATE_PERSON_PARAMS = {'person_id', 'fields_json'}
-_LIST_EVENTS_PARAMS = {'start', 'end'}
+_LIST_EVENTS_PARAMS = {'start', 'end', 'category_id', 'eligible', 'details', 'limit'}
 _ADD_EVENT_PARAMS = {'name', 'starts_on', 'ends_on', 'all_day',
                      'description', 'category_id', 'event_id',
                      }
@@ -444,8 +444,13 @@ class BreezeApi(object):
         Retrieve all events for a given date range.
 
         :param kwargs: Keyed parameters
-          start: Start date; defaults to first day of the current month.
-          end: End date; defaults to last day of the current month
+          start:    Start date; defaults to first day of the current month.
+          end:      End date; defaults to last day of the current month
+          category_id: If supplied, only events on the specified calendar will be returned.
+          eligible: If set to 1, details about who is eligible to be checked in ("everyone", "tags", "forms", or "none")
+                    are returned (including tags associated with the event).
+          details:  If set to 1, additional event details will be returned (e.g. description, check in settings, etc)
+          limit:    Number of events to return. Default is 500. Max is 1000.
         :return: JSON response
         """
         _check_illegal_param(kwargs, _LIST_EVENTS_PARAMS)
