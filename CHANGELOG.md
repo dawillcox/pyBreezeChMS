@@ -28,3 +28,6 @@ Adding remove_form_entry() method.
 
 ## 1.4.2 21 Mar 2024
 Issue #4: Fix exception in list_funds() with no parameter.
+
+## 1.4.3 28 Aug 2024
+Add some parameters to list_events().

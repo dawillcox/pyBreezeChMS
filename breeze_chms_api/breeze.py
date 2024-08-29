@@ -446,10 +446,13 @@ class BreezeApi(object):
         :param kwargs: Keyed parameters
           start:    Start date; defaults to first day of the current month.
           end:      End date; defaults to last day of the current month
-          category_id: If supplied, only events on the specified calendar will be returned.
-          eligible: If set to 1, details about who is eligible to be checked in ("everyone", "tags", "forms", or "none")
-                    are returned (including tags associated with the event).
-          details:  If set to 1, additional event details will be returned (e.g. description, check in settings, etc)
+          category_id: If supplied, only events on the specified calendar will be
+                    returned.
+          eligible: If set to 1, details about who is eligible to be checked in
+                    ("everyone", "tags", "forms", or "none") are returned (including
+                    tags associated with the event).
+          details:  If set to 1, additional event details will be returned (e.g.
+                    description, check in settings, etc)
           limit:    Number of events to return. Default is 500. Max is 1000.
         :return: JSON response
         """
@@ -662,7 +665,7 @@ class BreezeApi(object):
                         number.
           batch_name: The name of the batch. Can be used with batch number or
                       group.
-        :returns: New payment ID for the the payment
+        :returns: New payment ID for the payment
         :raises: BreezeError on failure to edit contribution.
         :note: The old payment is removed and a new one is added with
                the provided fields updated.

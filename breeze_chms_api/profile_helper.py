@@ -162,8 +162,8 @@ class _EmailExtractor(_MultiValueExtractor):
         fname = entry.get('field_type')[6:] # Strip off 'email_'
         if fname != 'primary':
             # Note, while the data structure allows for field_type values of other
-            # than email_primary, there's currently no way t set that in Breeze
-            # like there is for phone numbes.:q!
+            # than email_primary, there's currently no way to set that in Breeze
+            # like there is for phone numbers
             email = f'{fname}:{email}'
         return [email]
 
