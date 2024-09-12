@@ -495,6 +495,11 @@ class BreezeApi(object):
         :param person_id: ID for person in Breeze database
         :param instance_id: ID for event to check in to
         :return: Request response
+
+        Note: This adds the person to the event whether they are 
+        eligible or not. 
+        See https://support.breezechms.com/hc/en-us/articles/360001188554-Event-Check-in-Eligibility
+        You must apply eligibility rules yourself, using list_eligible_people.
         """
         return self._request(ENDPOINTS.EVENTS, command='attendance/add',
                              params={'person_id': person_id,
