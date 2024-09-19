@@ -204,6 +204,10 @@ def event_check_in(self, person_id, instance_id):
     :return: Request response
     """
 ```
+Note: `event_check_in()` adds the person to the event whether they are eligible or not. 
+See https://support.breezechms.com/hc/en-us/articles/360001188554-Event-Check-in-Eligibility
+You must apply eligibility rules yourself using `list_eligible_people()`
+before calling `event_check_in()`.
 ##### Check a person out from an event
 ```Python
 def event_check_out(self, person_id, instance_id):
