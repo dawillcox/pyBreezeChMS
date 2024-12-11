@@ -11,18 +11,27 @@ def _extract_name(profile: dict) -> str:
                     a "family" entry
     :return: String with name in an established form.
     """
-    full_name = profile.get('last_name', '')
-    first = profile.get('first_name', '')
-    middle = profile.get('middle_name', '')
-    nick = profile.get('nick_name', '')
-    if nick and nick != first:
-        first += f' ({nick})'
-    if middle:
-        first += f' {middle}'
+    last_name = profile.get('last_name')
+    first = profile.get('first_name')
+    middle = profile.get('middle_name')
+    nick = profile.get('nick_name')
+    name = []
     if first:
-        full_name += f', {first}'
-    return full_name
-
+        name.append(first)
+    if nick:
+        name.append(f'({nick})')
+    if middle:
+        name.append(middle)
+    name = ' '.join(name)
+    if name:
+        name = f'{last_name}, {name}' if last_name else name
+    elif last_name:
+        name = last_name
+    else:
+        id = profile.get('id', '')
+        id = id if id else profile.get('person_id')
+        name = f'No name, id {id}'
+    return name
 
 def _delist(val: Union[List[str], None]) -> Union[List[str], str, None]:
     """
@@ -43,8 +52,8 @@ class _BaseExtractor:
         :param name: Name of profile field
         :param field_id:  id (for extracting from a profile)
         """
-        self.field_id = field_id
-        self.field_name = name
+        self.field_id:str = field_id
+        self.field_name:str = name
 
     @property
     def name(self):
@@ -197,7 +206,6 @@ class _FamilyExtractor(_MultiValueExtractor):
         :return: A single value list with the value, or None if no value
         """
         return _delist(self._value_from_details(profile))
-        # return self._value_from_details(profile)
 
     def _extract_entry(self, entry: dict) -> List[str]:
         name = _extract_name(entry.get('details'))
@@ -258,7 +266,6 @@ class ProfileHelper:
                 field_type = field_def.get('field_type')
                 extractor = _extractors.get(field_type)
                 if extractor:
-
                     field_id = field_def.get('field_id')
                     field_name = f"{section_name}:{field_def.get('name')}"
                     self.id_to_field[field_id] = extractor(field_name, field_id)
@@ -411,7 +418,7 @@ def compare_profiles(prev_helper: ProfileHelper,
                      cur_helper: ProfileHelper,
                      prev_people: List[dict],
                      cur_people: List[dict]) -> \
-        List[Tuple[str, List[Tuple[str, str, str]]]]:
+        List[Tuple[str, List[Tuple[str, List[str], List[str]]]]]:
     """
     Create a report of differences between two instances of a Breeze account.
     (Typically one saved at an earlier date, one current.)

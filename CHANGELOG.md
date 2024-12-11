@@ -31,3 +31,6 @@ Issue #4: Fix exception in list_funds() with no parameter.
 
 ## 1.4.3 28 Aug 2024
 Add some parameters to list_events().
+
+## 1.4.4 10 Dec 2024
+Deal with name when only first is present. (Issue #7.)

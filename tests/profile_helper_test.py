@@ -4,7 +4,9 @@ import json
 from typing import List
 from breeze_chms_api.profile_helper import (join_dicts,
                                             ProfileHelper,
-                                            compare_profiles)
+                                            compare_profiles,
+                                            _AddressExtractor,
+                                            _extract_name)
 
 TEST_FILES_DIR = os.path.join(os.path.split(__file__)[0], 'test_files')
 
@@ -57,6 +59,42 @@ class HelperTests(unittest.TestCase):
                 self.assertEqual(lv, f'{k}: left')
             else:
                 self.assertIsNone(lv, f'Got unexpected left {lv}')
+
+    def test_name(self):
+        # Testing various name extractions
+        test_id = '1463'
+        profile = {
+            'id': test_id,
+            'first_name': 'first',
+            'last_name': 'last',
+            'middle_name': 'middle',
+            'nick_name': 'nick',
+        }
+        result = _extract_name(profile)
+        self.assertEqual(result, 'last, first (nick) middle')
+        profile['nick_name'] = None
+        result = _extract_name(profile)
+        self.assertEqual(result, 'last, first middle')
+        profile['middle_name'] = None
+        result = _extract_name(profile)
+        self.assertEqual(result, 'last, first')
+        profile['nick_name'] = "nicker"
+        result = _extract_name(profile)
+        self.assertEqual(result, 'last, first (nicker)')
+        profile['first_name'] = None
+        result = _extract_name(profile)
+        self.assertEqual(result, 'last, (nicker)')
+        profile['last_name'] = None
+        result = _extract_name(profile)
+        self.assertEqual(result, '(nicker)')
+        profile['nick_name'] = None
+        result = _extract_name(profile)
+        self.assertEqual(result, f'No name, id {test_id}')
+
+    def test_no_address(self):
+        extractor = _AddressExtractor("name", "12345")
+        result = extractor._extract_entry({})
+        self.assertEqual(result, [])
 
 class DiffTests(unittest.TestCase):
     def test_diff(self):
