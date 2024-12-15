@@ -18,7 +18,9 @@ def _extract_name(profile: dict) -> str:
     name = []
     if first:
         name.append(first)
-    if nick:
+    if nick and nick != first:
+        # Since Breeze apparently sets 'first_name' to 'nick_name' if the latter
+        # is defined, this probably will never happen. But just in case...
         name.append(f'({nick})')
     if middle:
         name.append(middle)

@@ -72,6 +72,9 @@ class HelperTests(unittest.TestCase):
         }
         result = _extract_name(profile)
         self.assertEqual(result, 'last, first (nick) middle')
+        profile['nick_name'] = 'first'
+        result = _extract_name(profile)
+        self.assertEqual(result, 'last, first middle')
         profile['nick_name'] = None
         result = _extract_name(profile)
         self.assertEqual(result, 'last, first middle')

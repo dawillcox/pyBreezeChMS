@@ -34,3 +34,6 @@ Add some parameters to list_events().
 
 ## 1.4.4 10 Dec 2024
 Deal with name when only first is present. (Issue #7.)
+
+## 1.4.4.1 15 Dec 2024
+Fix misunderstanding about how Breeze sets the "first_name" profile field. (Issue #8.)
