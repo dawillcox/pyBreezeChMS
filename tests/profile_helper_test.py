@@ -99,6 +99,27 @@ class HelperTests(unittest.TestCase):
         result = extractor._extract_entry({})
         self.assertEqual(result, [])
 
+    def test_address(self):
+        extractor = _AddressExtractor("name", "12345")
+        data = {
+            "field_type": "address_primary",
+            "street_address": "1600 Pennsylvania AV",
+            "city": "Washington",
+            "state": "DC",
+            "zip": "99999",
+            "longitude": "0",
+            "latitude": "0",
+            "is_primary": "1",
+            "is_private": "0"
+          }
+        result = extractor._extract_entry(data)
+        self.assertEqual(['1600 Pennsylvania AV;Washington DC 99999'],
+                         result)
+        data['street_address'] += '<br>Rm 222'
+        result = extractor._extract_entry(data)
+        self.assertEqual(['1600 Pennsylvania AV;Rm 222;Washington DC 99999'],
+                         result)
+
 class DiffTests(unittest.TestCase):
     def test_diff(self):
         with open(os.path.join(TEST_FILES_DIR, 'TestDataRef.json'), 'r') as f:

@@ -231,8 +231,12 @@ class _AddressExtractor(_MultiValueExtractor):
         fields = []
         # Note: It isn't clear that there's ever a _2.
         for part in [entry.get('street_address'), entry.get('street_address_2')]:
+            # Note: While street_address_2 apparently can be in the profile,
+            # it isn't currently set.
             if part:
-                fields += part.split('<br />')
+                # If you add a second line to an address in Breeze, the two
+                # lines are in the 'street_address' item, separated by <br>.
+                fields += part.split('<br>')
         fields += [csz]
         return [';'.join(v for v in fields if v)]
 

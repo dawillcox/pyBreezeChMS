@@ -37,3 +37,6 @@ Deal with name when only first is present. (Issue #7.)
 
 ## 1.4.4.1 15 Dec 2024
 Fix misunderstanding about how Breeze sets the "first_name" profile field. (Issue #8.)
+
+## 1.4.4.2 6 Jan 2025
+Fix mishandling of two-line address field. (Issue #9.)
