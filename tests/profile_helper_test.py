@@ -115,7 +115,14 @@ class HelperTests(unittest.TestCase):
         result = extractor._extract_entry(data)
         self.assertEqual(['1600 Pennsylvania AV;Washington DC 99999'],
                          result)
+
+        # Check for second line, current encoding
         data['street_address'] += '<br>Rm 222'
+        result = extractor._extract_entry(data)
+        self.assertEqual(['1600 Pennsylvania AV;Rm 222;Washington DC 99999'],
+                         result)
+
+        data['street_address'] = data['street_address'].replace('<br>', '<br />')
         result = extractor._extract_entry(data)
         self.assertEqual(['1600 Pennsylvania AV;Rm 222;Washington DC 99999'],
                          result)

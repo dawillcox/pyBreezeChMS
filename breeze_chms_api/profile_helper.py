@@ -236,6 +236,13 @@ class _AddressExtractor(_MultiValueExtractor):
             if part:
                 # If you add a second line to an address in Breeze, the two
                 # lines are in the 'street_address' item, separated by <br>.
+                # Grrr. But <br> is only the case currently. I don't kmow when
+                # it changed, but it's true in Jan '25. Profiles that had
+                # a second line added in the past have <br />.
+                # Why do this?
+                if '<br ' in part:
+                    # Take care of legacy encoding for second line.
+                    part = part.replace('<br />', '<br>')
                 fields += part.split('<br>')
         fields += [csz]
         return [';'.join(v for v in fields if v)]

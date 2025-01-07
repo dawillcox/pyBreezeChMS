@@ -40,3 +40,8 @@ Fix misunderstanding about how Breeze sets the "first_name" profile field. (Issu
 
 ## 1.4.4.2 6 Jan 2025
 Fix mishandling of two-line address field. (Issue #9.)
+Don't use this version.
+
+## 1.4.4.3 6 Jan 2025
+Fix mishandling of two-line address field,
+handle both old and new Breeze coding. (Issue #9.)
