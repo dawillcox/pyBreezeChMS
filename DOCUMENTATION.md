@@ -96,6 +96,9 @@ def list_people(self, **kwargs) -> List[dict]:
 ```
 This returns all (or a selected subset) of people in your database, with
 basic or extended details for each.
+
+For an extend discussion of the `filter_json` parameter, see [here](#filter_json).
+
 ##### Get details about a person
 ```Python
 def get_person_details(self, person_id: Union[str, int]) -> dict:
@@ -579,6 +582,123 @@ def unassign_tag(self, person_id: str,
     :return: True if success
     """
 ```
+
+<a id="filter_json"></a>
+### Filter Json
+This section only applies to the `list_people()` method, but it's
+complicated enough to make it a separate section.
+
+First, a caveat: The form of `filter_json` isn't described in any
+of the Breeze API documentation. What you see here is what I've
+deduced through experimentation. No warranty express or implied.
+If you find something wrong or missing I request that you file
+an issue to get that corrected. With that out of the way...
+
+The `filter_json` parameter needs some special explanation since
+it isn't documented anywhere in the Breeze API. It's a key:value map
+of filter parameters. The parameter can either a python dict, or a string with
+the JSON encoding; `list_people()` will convert the dict for you if necessary.
+
+But what are the valid keys and values. It's pretty obscure. Perhaps the simplest
+solution if you want a specific query for your own installation is to set up a
+query in Breeze's People and look at the URL that it generates. That will show
+the key:value pairs to reproduce that query. The url isn't in the form needed
+for `filter_json`, but gives you the values. Hard code the key:value pairs into
+your Python dict and it should work for you.
+
+But what if you want to build a query on the fly. Or perhaps more important, 
+build a query that works across multiple Breeze instance. Now it gets complicated.
+
+### Filter on profile fields
+When filtering on a profile field, the key is the field ID, *not* the field name, and
+the field ID is specific to your Breeze instance. You'll have to
+use ``get_field_id()`` to get that mapping. (The ``profile_helper`` module
+has methods to help with that.)
+
+So for simple profile fields your query can just have a *field_id*: `value`
+entry for that part of the query.
+
+However, some of the complex Breeze special field types have subfields
+you can (must) reference. Subfields are named parts of a complex field
+and they're specified by appending the name to the field id,
+separated by an underscore. Those are described below.
+
+Name field
+: The name field has subfields `first`, `last`, `nick`, `middle`, and `maiden`.
+
+Date fields
+: Date fields have subfields `after` and `before`. 
+Values are a date in the form YYYY-MM-DD.
+
+Age field
+: The Age field has subfields `minyears` and `maxyears`.
+
+Birthdate field
+: The birthdate field has subfields `birthdateday`, `birthdatemonth`, and 
+`birthdateyear`. Each is a number or `any`. I don't know if all are required.
+
+Grade
+: Grade can be any set of `Pre-Kindergarden`, `Kindergarden`,
+`1st`, ..., `12th`, and `Graduated`, separated by `-`. *Or* you
+can use `mingrad` and `maxgrad` to specify a range of graduate years.
+
+Address
+: The address field has subfields `street`, `city`, `state`, `zip`,
+and `address_private`.
+
+Phone
+: For a phone number, the value is the desired number.
+But the phone field has two special values: `phone_private`
+and `do_not_text`. Set those to 1 if you want them. (I don't know if
+you can set them to zero to search for numbers without that setting.)
+
+Email
+: Similar to Phone, but with special values `email_private`
+and `do_not_email`.
+
+Checkmark and multi-value fields
+: Some fields can have zero, one, or more pre-defined values. For those
+the value is the id of the allowed value, _not_ the string name
+of the value. If you want to specify multiple values, separate the
+ids with `-` characters.
+
+Family
+: Family has two special subfields. `role` refers to this 
+individual's role in the family, and `includes` finds individuals
+where *someone* in the family has the role. Roles can be `Head`, `Spouse`,
+`Adult`, `Child`, `Unassigned`, or `Nofamily`. As in other places,
+separate multiple values with `-`.
+
+Search Type
+: By default, the search is for the individual. But there's a special
+key `search_type` to search on others in a family. Values can be 
+`person` to search for individuals (default), `parents` finds adults
+in the family where *anyone* matches the search criteria. `children`
+finds children where *anyone* in the family matches the criteria.
+`family` matches everyone where *anyone* in the family matches the
+search criteria.
+
+Added Date
+: This lets you search for people based on when they were added.
+`added_before` and `added_after` let you specify a range of dates.
+`added_within` gives you limited options to find recently added
+profiles, values are `today`, `last_7`, `last_30`, `last_90`,
+`this_quarter`, and `last_quarter`. Would something like `last_120` 
+work? I haven't tried.
+
+Archived
+: You can look for archived (or not) profiles. The `archived` key can
+have `yes`, `no`, or `both`. (I'm guessing the default is `no`.)
+
+Tags
+: Another level of complexity. You can look for profiles that have
+and/or do not have a set of tags, but you need to identify the tags
+by the tag id, not tag name. To find profiles *with* given tags, use
+`tag_contains` and prefix each tag id with `y_`. To find profiles *without*
+given tags use `tag_does_not_contain` and prefix each tag id with `n_`.
+Separate multiple prefixed tag ids with `-`'.
+
+
 
 ## Profile Helper
 Version 1.2.0 adds `profile_helper` which makes it easier
