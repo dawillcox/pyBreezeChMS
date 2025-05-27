@@ -87,10 +87,9 @@ def list_people(self, **kwargs) -> List[dict]:
         limit: If set, number of people to return, If none, will return all people
         offset: Number of people to skip before beginning to return results.
         details: Boolean, if True, return all information, Otherwise just names.
-        filter_json: Filter results based on criteria (tags, status, etc.)
-                Refer to the list_profile_field response to show values you're
-                searching for. Or see the API document for a slightly better
-                explanation.
+        filter_json: Filter results based on criteria (tags, status, etc.).
+                This is either a dict of key:value pairs or a string with
+                a json encoding of same.
     :return: List of dicts for profiles.
     """
 ```
@@ -594,22 +593,19 @@ deduced through experimentation. No warranty express or implied.
 If you find something wrong or missing I request that you file
 an issue to get that corrected. With that out of the way...
 
-The `filter_json` parameter needs some special explanation since
-it isn't documented anywhere in the Breeze API. It's a key:value map
-of filter parameters. The parameter can either a python dict, or a string with
-the JSON encoding; `list_people()` will convert the dict for you if necessary.
-
-But what are the valid keys and values. It's pretty obscure. Perhaps the simplest
+The `filter_json` parameter is a key:value map
+of filter parameters. But what are the valid keys and values?
+It's pretty obscure. Perhaps the simplest
 solution if you want a specific query for your own installation is to set up a
 query in Breeze's People and look at the URL that it generates. That will show
 the key:value pairs to reproduce that query. The url isn't in the form needed
 for `filter_json`, but gives you the values. Hard code the key:value pairs into
 your Python dict and it should work for you.
 
-But what if you want to build a query on the fly. Or perhaps more important, 
-build a query that works across multiple Breeze instance. Now it gets complicated.
+But what if you want to build a query on the fly? Or perhaps more important, 
+build a query that works across multiple Breeze instances? Now it gets complicated.
 
-### Filter on profile fields
+#### Filter on profile fields
 When filtering on a profile field, the key is the field ID, *not* the field name, and
 the field ID is specific to your Breeze instance. You'll have to
 use ``get_field_id()`` to get that mapping. (The ``profile_helper`` module
@@ -621,7 +617,10 @@ entry for that part of the query.
 However, some of the complex Breeze special field types have subfields
 you can (must) reference. Subfields are named parts of a complex field
 and they're specified by appending the name to the field id,
-separated by an underscore. Those are described below.
+separated by an underscore. So for example, to search for everyone
+with first name Bob, you'd search for '*YourNameFieldId*_first': 'Bob'.
+
+The complex fields are described below.
 
 Name field
 : The name field has subfields `first`, `last`, `nick`, `middle`, and `maiden`.
@@ -661,6 +660,8 @@ Checkmark and multi-value fields
 the value is the id of the allowed value, _not_ the string name
 of the value. If you want to specify multiple values, separate the
 ids with `-` characters.
+
+#### Other Filter Types
 
 Family
 : Family has two special subfields. `role` refers to this 
