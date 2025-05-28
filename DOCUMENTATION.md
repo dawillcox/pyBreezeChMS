@@ -96,7 +96,7 @@ def list_people(self, **kwargs) -> List[dict]:
 This returns all (or a selected subset) of people in your database, with
 basic or extended details for each.
 
-For an extend discussion of the `filter_json` parameter, see [here](#filter_json).
+For a discussion of the `filter_json` parameter, see [here](#filter_json).
 
 ##### Get details about a person
 ```Python
