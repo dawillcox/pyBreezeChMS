@@ -622,84 +622,91 @@ with first name Bob, you'd search for '*YourNameFieldId*_first': 'Bob'.
 
 The complex fields are described below.
 
-Name field
-: The name field has subfields `first`, `last`, `nick`, `middle`, and `maiden`.
+###### Name field
+The name field has subfields `first`, `last`, `nick`, `middle`, and `maiden`.
 
-Date fields
-: Date fields have subfields `after` and `before`. 
+###### Date fields
+Date fields have subfields `after` and `before`. 
 Values are a date in the form YYYY-MM-DD.
 
-Age field
-: The Age field has subfields `minyears` and `maxyears`.
+###### Age field
+The Age field has subfields `minyears` and `maxyears`.
 
-Birthdate field
-: The birthdate field has subfields `birthdateday`, `birthdatemonth`, and 
+###### Birthdate field
+The birthdate field has subfields `birthdateday`, `birthdatemonth`, and 
 `birthdateyear`. Each is a number or `any`. I don't know if all are required.
 
-Grade
-: Grade can be any set of `Pre-Kindergarden`, `Kindergarden`,
+###### Grade
+Grade can be any set of `Pre-Kindergarden`, `Kindergarden`,
 `1st`, ..., `12th`, and `Graduated`, separated by `-`. *Or* you
 can use `mingrad` and `maxgrad` to specify a range of graduate years.
 
-Address
-: The address field has subfields `street`, `city`, `state`, `zip`,
+###### Address
+The address field has subfields `street`, `city`, `state`, `zip`,
 and `address_private`.
 
-Phone
-: For a phone number, the value is the desired number.
+###### Phone
+For a phone number, the value is the desired number.
 But the phone field has two special values: `phone_private`
 and `do_not_text`. Set those to 1 if you want them. (I don't know if
 you can set them to zero to search for numbers without that setting.)
 
-Email
-: Similar to Phone, but with special values `email_private`
+###### Email
+Similar to Phone, but with special values `email_private`
 and `do_not_email`.
 
-Checkmark and multi-value fields
-: Some fields can have zero, one, or more pre-defined values. For those
+###### Checkmark and multi-value fields
+Some fields can have zero, one, or more pre-defined values. For those
 the value is the id of the allowed value, _not_ the string name
 of the value. If you want to specify multiple values, separate the
 ids with `-` characters.
 
-#### Other Filter Types
-
-Family
-: Family has two special subfields. `role` refers to this 
+###### Family
+Family has two special subfields. `role` refers to this 
 individual's role in the family, and `includes` finds individuals
 where *someone* in the family has the role. Roles can be `Head`, `Spouse`,
 `Adult`, `Child`, `Unassigned`, or `Nofamily`. As in other places,
 separate multiple values with `-`.
 
-Search Type
-: By default, the search is for the individual. But there's a special
+#### Not Profile Field Specific
+
+These filters don't use the field id as key. The keys are special keywords.
+
+###### Search Type
+By default, the search is for the individual. But there's a special
 key `search_type` to search on others in a family. Values can be 
 `person` to search for individuals (default), `parents` finds adults
 in the family where *anyone* matches the search criteria. `children`
 finds children where *anyone* in the family matches the criteria.
 `family` matches everyone where *anyone* in the family matches the
-search criteria.
+search criteria.  (There's a bit of explanation
+of this when you do a filter in Breeze.)
 
-Added Date
-: This lets you search for people based on when they were added.
+###### Added Date
+This lets you search for people based on when they were added.
 `added_before` and `added_after` let you specify a range of dates.
 `added_within` gives you limited options to find recently added
 profiles, values are `today`, `last_7`, `last_30`, `last_90`,
 `this_quarter`, and `last_quarter`. Would something like `last_120` 
 work? I haven't tried.
 
-Archived
-: You can look for archived (or not) profiles. The `archived` key can
-have `yes`, `no`, or `both`. (I'm guessing the default is `no`.)
+###### Archived
+You can look for archived (or not) profiles. The `archived` key can
+have `yes`, `no`, or `both` as values. (I'm guessing the default is `no`.)
 
-Tags
-: Another level of complexity. You can look for profiles that have
+###### Tags
+Another level of complexity. You can look for profiles that have
 and/or do not have a set of tags, but you need to identify the tags
 by the tag id, not tag name. To find profiles *with* given tags, use
 `tag_contains` and prefix each tag id with `y_`. To find profiles *without*
 given tags use `tag_does_not_contain` and prefix each tag id with `n_`.
-Separate multiple prefixed tag ids with `-`'.
+Separate multiple prefixed tag ids with `-`'. So for example you might have
+query items like like:
 
-
+```
+tag_contains: y_1234567-y_2345678
+tag_does_not_contain: n_9876543-n_8765432
+```
 
 ## Profile Helper
 Version 1.2.0 adds `profile_helper` which makes it easier
