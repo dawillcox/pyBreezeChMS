@@ -605,6 +605,11 @@ your Python dict and it should work for you.
 But what if you want to build a query on the fly? Or perhaps more important, 
 build a query that works across multiple Breeze instances? Now it gets complicated.
 
+Note that, for some query types you can searh on a set of values,
+for example multiple tags, or options in a multi-value field.
+In all cases, the search value is a string with the individual
+values separated by dashes (`-`).
+
 #### Filter on profile fields
 When filtering on a profile field, the key is the field ID, *not* the field name, and
 the field ID is specific to your Breeze instance. You'll have to
@@ -638,7 +643,7 @@ The birthdate field has subfields `birthdateday`, `birthdatemonth`, and
 
 ###### Grade
 Grade can be any set of `Pre-Kindergarden`, `Kindergarden`,
-`1st`, ..., `12th`, and `Graduated`, separated by `-`. *Or* you
+`1st`, ..., `12th`, and `Graduated`. *Or* you
 can use `mingrad` and `maxgrad` to specify a range of graduate years.
 
 ###### Address
@@ -646,10 +651,14 @@ The address field has subfields `street`, `city`, `state`, `zip`,
 and `address_private`.
 
 ###### Phone
-For a phone number, the value is the desired number.
+For a phone number, the value is the desired number. A null value will match
+people with no phone,or `*` will find any phone number.
 But the phone field has two special values: `phone_private`
-and `do_not_text`. Set those to 1 if you want them. (I don't know if
-you can set them to zero to search for numbers without that setting.)
+and `do_not_text`. Set those to 1 if you want phones with those attributes. 
+It appears that setting to zero will find phones that aren't private or "do not text."
+
+Note: As far as I can tell there's no option to search on a particular
+type of phone number: Home, Cell, or Work.
 
 ###### Email
 Similar to Phone, but with special values `email_private`
@@ -658,15 +667,13 @@ and `do_not_email`.
 ###### Checkmark and multi-value fields
 Some fields can have zero, one, or more pre-defined values. For those
 the value is the id of the allowed value, _not_ the string name
-of the value. If you want to specify multiple values, separate the
-ids with `-` characters.
+of the value.
 
 ###### Family
 Family has two special subfields. `role` refers to this 
 individual's role in the family, and `includes` finds individuals
-where *someone* in the family has the role. Roles can be `Head`, `Spouse`,
-`Adult`, `Child`, `Unassigned`, or `Nofamily`. As in other places,
-separate multiple values with `-`.
+where *someone* in the family has the role. Roles can be one or more of 
+`Head`, `Spouse`, `Adult`, `Child`, `Unassigned`, or `Nofamily`.
 
 #### Not Profile Field Specific
 
@@ -700,8 +707,7 @@ and/or do not have a set of tags, but you need to identify the tags
 by the tag id, not tag name. To find profiles *with* given tags, use
 `tag_contains` and prefix each tag id with `y_`. To find profiles *without*
 given tags use `tag_does_not_contain` and prefix each tag id with `n_`.
-Separate multiple prefixed tag ids with `-`'. So for example you might have
-query items like like:
+So for example you might have query items like like:
 
 ```
 tag_contains: y_1234567-y_2345678
